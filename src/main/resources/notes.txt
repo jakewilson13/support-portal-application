@@ -1,0 +1,18 @@
+JWT (JSON WEB TOKEN):
+Has become the standard when authenticating and authorizing users using restful web services.
+    Contains 3 Main Parts:
+        Header - Contains an "algorithm" that is used for the cryptographic (used to encrypt things) & also the "type". If using JWT, the type
+        will always be JWT.
+
+        Payload - Contains all of the user or the subject information. Can contain a user name, time the token was issued
+        or the different permissions a user is granted.
+
+        Signature - Is a 256 bit-secret(random string) which is used to encrypt all of the information and is very important to the application.
+        (Should keep it very secure)
+
+        The entire token when is seperated in these 3 parts by periods.
+            Ex: eyJhGciJIUzI1NilslnR5cCI6IKpXVCJ9(header).
+            eyJzdWLiOilxMjM0NTY3ODkwliwibmFtZSII6IkpvaG4RG9LlliwiajdfhbdjksaHJFDKla(Payload).
+            ShjLKHJGFDhfJHKLhtrGBHINJgikhy29843730e73PO089312ufnjdwsalHj_JL(Signature)
+
+        JWT token is just a very secure way of transmitting data from one application to another and because it's sp secure and compact it's being used a lot in restful applications.

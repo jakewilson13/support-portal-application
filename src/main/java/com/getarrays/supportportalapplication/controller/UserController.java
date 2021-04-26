@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/user")
 public class UserController {
 
-
     @GetMapping(value = "/")
     public String hello() {
         return "hello";
