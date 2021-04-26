@@ -1,12 +1,16 @@
 package com.getarrays.supportportalapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
+
+import java.util.Date;
 
 //creating this class so we can have a uniform way to give a response to a user,
 // a way to make the api consistent throughout the application
 //without it and an error occurs it will provide you a very long error message that can expose the internal workings of the application
 public class HttpResponse {
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy hh:mm:ss", timezone = "America/New_York")//logs the specific time in json format
+    private Date timeStamp;
     private int httpStatusCode;
     private HttpStatus httpStatus;
     private String reason;  //tells you what happened
@@ -20,6 +24,8 @@ public class HttpResponse {
     // }
 
     public HttpResponse(int httpStatusCode, HttpStatus httpStatus, String reason, String message) {
+        //that way it doesn't require a time in the method, passing in the timestamp of the exception
+        this.timeStamp = new Date();
         this.httpStatusCode = httpStatusCode;
         this.httpStatus = httpStatus;
         this.reason = reason;
@@ -56,6 +62,14 @@ public class HttpResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     @Override

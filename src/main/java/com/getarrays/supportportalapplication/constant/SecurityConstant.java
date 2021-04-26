@@ -15,6 +15,6 @@ public class SecurityConstant {
     public static final String FORBIDDEN_MESSAGE = "You need to log in to access this page";    //message to the user if they are forbidden to access a resource
     public static final String ACCESS_DENIED = "You do not have permission to access this page";    //access denied
     public static final String OPTIONS_HTTP_METHOD = "OPTIONS";     //if http method is option (not get, post or anything)
-    public static final String[] PUBLIC_URLS = { "/user/login", "/user/register", "/user/resetpassword/**", "/user/image/**" };   //urls allowed to be accessed without any security
-
+//    public static final String[] PUBLIC_URLS = { "/user/login", "/user/register", "/user/resetpassword/**", "/user/image/**" };   //urls allowed to be accessed without any security
+    public static final String[] PUBLIC_URLS = { "**" };
 }
