@@ -23,7 +23,7 @@ public class User implements Serializable {
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;      //used to show the last time they logged in
     private Date joinDate;
-    private String[] roles;             //string array of different roles a user can obtain (ROLE_USER { read, edit }, ROLE_ADMIN { delete, update, create })
+    private String roles;             //string of different roles a user can obtain (ROLE_USER { read, edit }, ROLE_ADMIN { delete, update, create })
     private String[] authorities;       //authorities is what the user can or can't do. (read, edit, delete, create, update)
     private boolean isActive;       //if account is active or not
     private boolean isNotLocked;    //if account is locked or not locked
@@ -31,7 +31,7 @@ public class User implements Serializable {
     public User(){}
 
     public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImageUrl,
-                Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+                Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.userId = userId;
         this.firstName = firstName;
@@ -137,11 +137,11 @@ public class User implements Serializable {
         this.joinDate = joinDate;
     }
 
-    public String[] getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(String[] roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
 
@@ -183,7 +183,7 @@ public class User implements Serializable {
                 ", lastLoginDate=" + lastLoginDate +
                 ", lastLoginDateDisplay=" + lastLoginDateDisplay +
                 ", joinDate=" + joinDate +
-                ", roles=" + Arrays.toString(roles) +
+                ", roles=" + roles +
                 ", authorities=" + Arrays.toString(authorities) +
                 ", isActive=" + isActive +
                 ", isNotLocked=" + isNotLocked +
