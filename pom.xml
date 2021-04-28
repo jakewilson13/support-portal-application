@@ -28,6 +28,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<!--allows us to send emails-->
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
@@ -38,12 +39,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<!--jwt token dependency from OAuth-->
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>
 			<version>3.10.0</version>
 		</dependency>
+
 		<!--used to -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>

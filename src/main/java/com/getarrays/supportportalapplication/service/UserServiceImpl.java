@@ -1,6 +1,5 @@
 package com.getarrays.supportportalapplication.service;
 
-
 import com.getarrays.supportportalapplication.enumeration.Role;
 import com.getarrays.supportportalapplication.exception.model.EmailExistsException;
 import com.getarrays.supportportalapplication.exception.model.UsernameExistsException;
@@ -20,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
@@ -37,10 +37,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private BCryptPasswordEncoder passwordEncoder;
 
+    private EmailService emailService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
 
@@ -63,7 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     //will either return an exception, a new user, or null
     @Override
-    public User register(String firstName, String lastName, String username, String email) throws EmailExistsException, UsernameExistsException {
+    public User register(String firstName, String lastName, String username, String email) throws EmailExistsException, UsernameExistsException, MessagingException {
         validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
         User user = new User();
         user.setUserId(generateUserId());
@@ -82,6 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setProfileImageUrl(getTemporaryProfileImageUrl());
         userRepository.save(user);
         LOGGER.info("New user password: " + password);
+        emailService.sendNewPasswordEmail(firstName, password, email);  //not the encoded password
         return user;
     }
 

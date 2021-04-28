@@ -82,7 +82,7 @@ public class JwtTokenProvider {
         try {
             Algorithm algorithm = Algorithm.HMAC512(secret);
             jwtVerifier = JWT.require(algorithm).withIssuer(SecurityConstant.GET_ARRAYS_LLC).build();
-            //wont pass information from the acutal exception cause that can reveal internal workings of application
+            //wont pass information from the actual exception cause that can reveal internal workings of application
         } catch (JWTVerificationException exception) {
             //creating a new instance of exception and passing in our implementation
             throw new JWTVerificationException(SecurityConstant.TOKEN_CANNOT_BE_VERIFIED);
