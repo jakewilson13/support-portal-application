@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.getarrays.supportportalapplication.constant.UserImplementationConstant.*;
 
@@ -37,10 +38,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private BCryptPasswordEncoder passwordEncoder;
 
+    private LoginAttemptService loginAttemptService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.loginAttemptService = loginAttemptService;
     }
 
 
@@ -51,15 +55,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             LOGGER.error(NO_USER_FOUND_BY_USERNAME + username);
             throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
         } else {
+            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
-            userRepository.save(user);
+            userRepository.save(user);  //when we save the user it also updates in the database. So if the account is locked, the it will go from 1 to 0
             UserPrinciple userPrinciple = new UserPrinciple(user);
             LOGGER.info(FOUND_USER_BY_USERNAME + username);
             return userPrinciple;
         }
     }
-
 
     //will either return an exception, a new user, or null
     @Override
@@ -101,6 +105,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findUserByEmail(email);
     }
 
+
+    private void validateLoginAttempt(User user) {
+        if(user.isNotLocked()) {    //if it's not locked then will jump to the else on 116 and remove the user from the loginAttemptCache
+            if(loginAttemptService.hasExceededMaxAttempt(user.getUsername())) {
+                user.setNotLocked(false);   //if exceeded max attempt lock the user
+            } else {
+                user.setNotLocked(true);    //else it won't be locked
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptToCache(user.getUsername());
+        }
+    }
 
     private String getTemporaryProfileImageUrl() {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(DEFAULT_USER_IMAGE_PATH).toUriString();    //will return whatever the url is for the actual server
