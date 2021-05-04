@@ -3,6 +3,7 @@ package com.getarrays.supportportalapplication.service;
 import com.getarrays.supportportalapplication.enumeration.Role;
 import com.getarrays.supportportalapplication.exception.model.EmailExistsException;
 import com.getarrays.supportportalapplication.exception.model.EmailNotFoundException;
+import com.getarrays.supportportalapplication.exception.model.UserNotFoundException;
 import com.getarrays.supportportalapplication.exception.model.UsernameExistsException;
 import com.getarrays.supportportalapplication.model.User;
 import com.getarrays.supportportalapplication.model.UserPrinciple;
@@ -24,19 +25,17 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static com.getarrays.supportportalapplication.constant.FileConstant.*;
 import static com.getarrays.supportportalapplication.constant.UserImplementationConstant.*;
+import static com.getarrays.supportportalapplication.enumeration.Role.ROLE_USER;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.springframework.http.MediaType.*;
 
 @Service
 @Transactional  //manages propagation whenever dealing with transactions
@@ -78,26 +77,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     //will either return an exception, a new user, or null
     @Override
-    public User register(String firstName, String lastName, String username, String email) throws EmailExistsException, UsernameExistsException, MessagingException {
-        validateNewUsernameAndEmail(StringUtils.EMPTY, username, email);
+    public User register(String firstName, String lastName, String username, String email) throws UserNotFoundException, MessagingException, EmailExistsException, UsernameExistsException {
+        validateNewUsernameAndEmail(EMPTY, username, email);
         User user = new User();
         user.setUserId(generateUserId());
         String password = generatePassword();
-        String encodedPassword = encodePassword(password);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setUsername(username);
         user.setEmail(email);
         user.setJoinDate(new Date());
-        user.setPassword(encodedPassword);
+        user.setPassword(encodePassword(password));
         user.setActive(true);
         user.setNotLocked(true);
-        user.setRoles(Role.ROLE_USER.name());
-        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setRoles(ROLE_USER.name());
+        user.setAuthorities(ROLE_USER.getAuthorities());
         user.setProfileImageUrl(getTemporaryProfileImageUrl(username));
         userRepository.save(user);
         LOGGER.info("New user password: " + password);
-        emailService.sendNewPasswordEmail(firstName, password, email);  //not the encoded password
+        emailService.sendNewPasswordEmail(firstName, password, email);
         return user;
     }
 
@@ -171,6 +169,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String password = generatePassword();
         user.setPassword(encodePassword(password));
         userRepository.save(user);
+        LOGGER.info("New user password: " + password);
         emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
     }
 

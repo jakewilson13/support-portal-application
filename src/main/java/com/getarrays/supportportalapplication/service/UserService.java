@@ -3,6 +3,7 @@ package com.getarrays.supportportalapplication.service;
 
 import com.getarrays.supportportalapplication.exception.model.EmailExistsException;
 import com.getarrays.supportportalapplication.exception.model.EmailNotFoundException;
+import com.getarrays.supportportalapplication.exception.model.UserNotFoundException;
 import com.getarrays.supportportalapplication.exception.model.UsernameExistsException;
 import com.getarrays.supportportalapplication.model.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface UserService {
 
     //register is when you do not have an account so you have to signup
-    User register(String firstName, String lastName, String username, String email) throws EmailExistsException, UsernameExistsException, MessagingException;
+    User register(String firstName, String lastName, String username, String email) throws EmailExistsException, UsernameExistsException, MessagingException, UserNotFoundException;
 
     List<User> getUsers();
 

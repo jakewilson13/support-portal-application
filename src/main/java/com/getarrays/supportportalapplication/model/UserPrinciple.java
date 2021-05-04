@@ -13,10 +13,9 @@ import static java.util.Arrays.stream;
 //this is the user that spring security needs for it to do all of the work that it needs to do
 //telling spring security what this information is so when we pass spring security the username and password, it can map those values to determine if they are correct or not
 public class UserPrinciple implements UserDetails {
-    //passing our user class inside of the constructor
+
     private User user;
 
-    //now we can give spring security the user we created
     public UserPrinciple(User user) {
         this.user = user;
     }

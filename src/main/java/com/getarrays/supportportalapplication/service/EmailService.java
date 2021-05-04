@@ -19,7 +19,6 @@ import static javax.mail.Message.RecipientType.TO;
 @Service
 public class EmailService {
 
-
     public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
         Message message = createEmail(firstName, password, email);
         SMTPTransport smtpTransport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
