@@ -15,6 +15,6 @@ Has become the standard when authenticating and authorizing users using restful 
             eyJzdWLiOilxMjM0NTY3ODkwliwibmFtZSII6IkpvaG4RG9LlliwiajdfhbdjksaHJFDKla(Payload).
             ShjLKHJGFDhfJHKLhtrGBHINJgikhy29843730e73PO089312ufnjdwsalHj_JL(Signature)
 
-        JWT token is just a very secure way of transmitting data from one application to another and because it's sp secure and compact it's being used a lot in restful applications.
+        JWT token is just a very secure way of transmitting data from one application to another and because it's secure and compact & it's being used a lot in restful applications.
 
         jFKoGw0dSf - jakewilson
