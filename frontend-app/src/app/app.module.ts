@@ -10,16 +10,24 @@ import { AuthenticationInterceptor } from './interceptor/authentication.intercep
 import { AuthenticationGuard } from './guard/authentication.guard';
 import { NotificationModule } from './notification.module';
 import { NotificationService } from './service/notification.service';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { UserComponent } from './components/user/user.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     HttpClientModule,
-    NotificationModule,
+    NotificationModule
   ],
   //you wire services inside of the application inside of the providers array
   providers: [AuthenticationGuard, AuthenticationService, UserService, NotificationService,

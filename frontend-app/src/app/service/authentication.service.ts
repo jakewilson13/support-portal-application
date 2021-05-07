@@ -23,14 +23,14 @@ export class AuthenticationService {
   //observables are when you have code that could take some time to execute (when you make http requests)
     //so run this piece of code, and let me know when you get the response back
       //the observable will return an http response of any type or an error
-  public login(user: User): Observable<HttpResponse<any> | HttpErrorResponse> {
-    return this.http.post<HttpResponse<any> | HttpErrorResponse>
-    (`${this.host}/user/login`, user, {observe: 'response'}); //after the post request is executed it returns the url, the object (which is user) to the request body, then passes us back the entire response (headers, etc. we need to get the jwt token)
+
+  public login(user: User): Observable<HttpResponse<User>> {
+    return this.http.post<User> (`${this.host}/user/login`, user, {observe: 'response'}); //after the post request is executed it returns the url, the object (which is user) to the request body, then passes us back the entire response (headers, etc. we need to get the jwt token)
   }
 
   //only going to return a user or an http error response
-  public register(user: User): Observable<User | HttpErrorResponse> {
-    return this.http.post<User | HttpErrorResponse>
+  public register(user: User): Observable<User> {
+    return this.http.post<User>
     (`${this.host}/user/register`, user); //only going to give us the response body (the user)
   }
 
