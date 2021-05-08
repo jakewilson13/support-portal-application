@@ -47,18 +47,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       },
       //if there is an error
       (errorResponse: HttpErrorResponse) => {
-        console.log(errorResponse);
         this.sendErrorNotification(NotificationType.ERROR, errorResponse.error.message);  //sending the error message to the user and accessing the error message inside of the response
         this.showLoading = false;
       }
     )
   );
-}   //error message could be null so we are checking that here
-  private sendErrorNotification(notificationType: NotificationType, message: string) {
+}   //error message could be null cause we didn't get one from the server so we are checking that here
+  private sendErrorNotification(notificationType: NotificationType, message: string): void {
     if(message != null) { //if the error exists we send the message to the user
       this.notificationService.showNotification(notificationType, message);
     } else {
-      this.notificationService.showNotification(notificationType, 'AN ERROR OCCURED. PLEASE TRY AGAIN');  //we don't know what happened if the error occured so we are telling them to try again
+      this.notificationService.showNotification(notificationType, 'An error occured. Please try again.');  //we don't know what happened if the error occured so we are telling them to try again
     }
   }
 

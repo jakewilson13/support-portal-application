@@ -22,7 +22,7 @@
               </div>
               <!--checking to see if username input is invalid or if it has been touched-->
               <span class="help-block" style="color:red;"
-              *ngIf="usernameInput.invalid && usernameInput.touched">Please enter a username</span>
+              *ngIf="usernameInput.invalid && usernameInput.touched">Please enter a username.</span>
               <div class="input-group mb-2">
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-key"></i></span>
@@ -34,9 +34,14 @@
               <span class="help-block" style="color:red;"
               *ngIf="passwordInput.invalid && passwordInput.touched">Please enter a password.</span>
           <div class="d-flex justify-content-center mt-3 login_container">
+            <!--calling disbaled which is default for html DOM, checking to see if the login form is invalid 
+              or if the show loading is true-->
             <button type="submit" [disabled]="loginForm.invalid || showLoading" name="button" class="btn login_btn">
+              <!--if showLoading is true, we show the spinner-->
               <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
+              <!--if showLoading is true, we show the Loading...-->
               <span *ngIf="showLoading">Loading...</span>
+              <!--if showLoading is not true, we show the Login...-->
               <span *ngIf="!showLoading">Login</span>
             </button>
           </div>
