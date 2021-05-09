@@ -147,7 +147,7 @@ public class UserController extends ExceptionHandling {
     }
 
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {  //will return a custom response for us for our delete user method
-        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase().toUpperCase(),
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase(),
                 message), httpStatus);   //filling the requirements for our HttpResponse class inside of the constructor for the response body
     }
 

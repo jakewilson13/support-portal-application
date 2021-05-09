@@ -22,8 +22,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
 
 
-
-
     //if a user is already logged in and tries to navigate to /register
   ngOnInit(): void {
     if(this.authService.isLoggedIn()) {
@@ -49,7 +47,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   private sendNotification(notificationType: NotificationType, message: string): void {
-    if(message != null) { //if the error exists we send the message to the user
+    if(message) { //if the error exists we send the message to the user(if it's true)
       this.notificationService.showNotification(notificationType, message);
     } else {
       this.notificationService.showNotification(notificationType, 'An error occured. Please try again.');  //we don't know what happened if the error occured so we are telling them to try again
