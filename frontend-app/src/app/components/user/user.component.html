@@ -41,8 +41,8 @@
       <div class="mb-3 float-right">
         <div class="btn-group mr-2">
           <form class="form-inline my-2 my-lg-0 justify-content-center">
-            <input name="searchTerm" #searchInput="ngModel" class="form-control mr-sm-2" ngModel
-            (ngModelChange)="searchUsers(searchInput.value)" type="search" placeholder="Search users...">
+            <!-- <input name="searchTerm" #searchInput="ngModel" class="form-control mr-sm-2" ngModel
+             (ngModelChange)="searchUsers(searchInput.value)" type="search" placeholder="Search users..."> -->
          </form>
           <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addUserModal">
             <i class="fa fa-plus"></i>New User
@@ -103,6 +103,7 @@
     </button>
 
     <!-- modal user info -->
+    <!--since the Id is viewUserModal and that is the data-target within the button, we can now reference anything that has to do with the selectedUser inside of the user component function-->
     <div class="modal fade bd-example-modal-lg" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby=""
       aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -137,10 +138,10 @@
                           <span [hidden]="!selectedUser?.active" class="badge badge-success">Active</span>
                           <span [hidden]="selectedUser?.active" class="badge badge-danger">Inactive</span>
                         </div>
-                        <div *ngIf="selectedUser?.lastLoginDateDisplay" class="text-muted"><small>Last Login: {{selectedUser?.lastLoginDateDisplay | date: 'medium'}}</small>
+                        <div *ngIf="selectedUser?.logInDateDisplay" class="text-muted"><small>Last Login: {{selectedUser?.lastLoginDateDisplay | date: 'medium'}}</small>
                         </div>
                       </div>
-                      <div class="text-center text-sm-right">
+                      <div class="text-center text-sm-right">     <!--| mediumDate is a formatted date so we don't pass the long string of the date-->
                         <div class="text-muted"><small>Joined {{selectedUser?.joinDate | date: 'mediumDate'}}</small></div>
                       </div>
                     </div>
@@ -151,10 +152,10 @@
                   <li class="list-group-item"><i class="fa fa-id-badge float-right"></i>{{selectedUser?.userId}}
                   </li>
                   <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{selectedUser?.email}}
-                  </li>
-                  <li class="list-group-item"><i class="fas fa-shield-alt float-right"></i>{{selectedUser?.role.substring(5)}}
-                  <li *ngIf="selectedUser?.lastLoginDateDisplay" class="list-group-item"><i
-                      class="fas fa-sign-in-alt float-right"></i>{{selectedUser?.lastLoginDateDisplay | date: 'medium'}}
+                  </li>     <!--sub string takes away the first 5 characters of the data being loaded. (ROLE)-->
+                  <li class="list-group-item"><i class="fas fa-shield-alt float-right"></i>{{selectedUser?.roles.substring(5)}}
+                  <li *ngIf="selectedUser?.logInDateDisplay" class="list-group-item"><i
+                      class="fas fa-sign-in-alt float-right"></i>{{selectedUser?.logInDateDisplay | date: 'medium'}}
                   </li>
                   <li class="list-group-item">
                     <span [hidden]="selectedUser?.notLocked">
