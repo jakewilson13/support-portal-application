@@ -1,6 +1,5 @@
 export class User {
-    public id: number;
-    public userId: number;
+    public userId: string;
     public firstName: string;
     public lastName: string;
     public username: string;
@@ -10,7 +9,7 @@ export class User {
     public profileImageUrl: string;
     public active: boolean;
     public notLocked: boolean;
-    public roles: string;
+    public role: string;
     public authorities: [];
 
     constructor() {
@@ -20,7 +19,7 @@ export class User {
         this.email ='';
         this.active = false;
         this.notLocked = false;
-        this.roles = '';
+        this.role = '';
         this.authorities = [];
     }
 }

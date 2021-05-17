@@ -1,5 +1,7 @@
 package com.getarrays.supportportalapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -12,18 +14,20 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  //(can only write it, cannot read it)will hide the id inside of the browser when the user is initialized
     private Long id;            //Id for the database(primary key)
     private String userId;      //Id that a user can see - identifying a user inside of a company
     private String firstName;
     private String lastName;
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  //(can only write it, cannot read it)will hide the password (hashed) inside of the browser when the user is initialized
     private String password;
     private String email;       //using this email to send out verification
     private String profileImageUrl;
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;      //used to show the last time they logged in
     private Date joinDate;
-    private String roles;             //string of different roles a user can obtain (ROLE_USER { read, edit }, ROLE_ADMIN { delete, update, create })
+    private String role;             //string of different roles a user can obtain (ROLE_USER { read, edit }, ROLE_ADMIN { delete, update, create })
     private String[] authorities;       //authorities is what the user can or can't do. (read, edit, delete, create, update)
     private boolean isActive;       //if account is active or not
     private boolean isNotLocked;    //if account is locked or not locked
@@ -31,7 +35,7 @@ public class User implements Serializable {
     public User(){}
 
     public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImageUrl,
-                Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+                Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String role, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.userId = userId;
         this.firstName = firstName;
@@ -43,7 +47,7 @@ public class User implements Serializable {
         this.lastLoginDate = lastLoginDate;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
         this.joinDate = joinDate;
-        this.roles = roles;
+        this.role = role;
         this.authorities = authorities;
         this.isActive = isActive;
         this.isNotLocked = isNotLocked;
@@ -137,12 +141,12 @@ public class User implements Serializable {
         this.joinDate = joinDate;
     }
 
-    public String getRoles() {
-        return roles;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoles(String roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String[] getAuthorities() {
@@ -183,7 +187,7 @@ public class User implements Serializable {
                 ", lastLoginDate=" + lastLoginDate +
                 ", lastLoginDateDisplay=" + lastLoginDateDisplay +
                 ", joinDate=" + joinDate +
-                ", roles=" + roles +
+                ", role=" + role +
                 ", authorities=" + Arrays.toString(authorities) +
                 ", isActive=" + isActive +
                 ", isNotLocked=" + isNotLocked +

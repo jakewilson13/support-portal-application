@@ -29,7 +29,6 @@ import java.util.List;
 
 import static com.getarrays.supportportalapplication.constant.FileConstant.*;
 import static com.getarrays.supportportalapplication.constant.SecurityConstant.JWT_TOKEN_HEADER;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
@@ -115,7 +114,7 @@ public class UserController extends ExceptionHandling {
                                            @RequestParam("isActive") String isActive,
                                            @RequestParam("isNonLocked") String isNonLocked,
                                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) throws UserNotFoundException, IOException, NotAnImageFileException, EmailExistsException, UsernameExistsException {
-        User newUser = userService.addNewUser(firstName, lastName, username,email, role, Boolean.parseBoolean(isNonLocked), Boolean.parseBoolean(isActive), profileImage);
+        User newUser = userService.addNewUser(firstName, lastName, username, email, role, Boolean.parseBoolean(isNonLocked), Boolean.parseBoolean(isActive), profileImage);
         return new ResponseEntity<>(newUser, OK);
     }
 
@@ -139,11 +138,11 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(user, OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasAnyAuthority('user:delete')")
-    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") long id) throws IOException {
-        userService.deleteUser(id);
-        return response(NO_CONTENT, USER_DELETED_SUCCESSFULLY);
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("username") String username) throws IOException {
+        userService.deleteUser(username);
+        return response(OK, USER_DELETED_SUCCESSFULLY);
     }
 
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {  //will return a custom response for us for our delete user method

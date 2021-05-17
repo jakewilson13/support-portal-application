@@ -51,7 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     //we need to add cross origin resource sharing
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        //not using cross site request forgery - s an attack that forces an end user to execute unwanted actions on a web application
+        //not using cross site request forgery - is an attack that forces an end user to execute unwanted actions on a web application
         http.csrf().disable().cors().and()
                 //since using json web token we do not need to keep track of people that are logged in, therefore we are creating the policy as stateless
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -39,8 +39,8 @@ export class UserService {
     });
   }
 
-  public deleteUser(userId: number): Observable <CustomHttpResponse | HttpErrorResponse> {
-    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${userId}`);
+  public deleteUser(username: string): Observable <CustomHttpResponse | HttpErrorResponse> {
+    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${username}`);
   }
 
   public addUsersToLocalCache(users: User[]): void {
@@ -61,7 +61,7 @@ export class UserService {
     formData.append('lastName', user.lastName);
     formData.append('username', user.username);
     formData.append('email', user.email);
-    formData.append('roles', user.roles);
+    formData.append('role', user.role);
     formData.append('profileImage', profileImage);
     formData.append('isActive', JSON.stringify(user.active)); //inside of our update method inside of the backend, it is expecting isActive & isNotLocked as a string
     formData.append('isNonLocked', JSON.stringify(user.notLocked));

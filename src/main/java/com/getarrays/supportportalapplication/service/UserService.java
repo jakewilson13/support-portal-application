@@ -1,10 +1,7 @@
 package com.getarrays.supportportalapplication.service;
 
 
-import com.getarrays.supportportalapplication.exception.model.EmailExistsException;
-import com.getarrays.supportportalapplication.exception.model.EmailNotFoundException;
-import com.getarrays.supportportalapplication.exception.model.UserNotFoundException;
-import com.getarrays.supportportalapplication.exception.model.UsernameExistsException;
+import com.getarrays.supportportalapplication.exception.model.*;
 import com.getarrays.supportportalapplication.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,17 +21,17 @@ public interface UserService {
     User findUserByEmail(String email);
 
     //when you're already logged into the application and try to add a new user
-    User addNewUser(String firstName, String lastName, String username, String email, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws EmailExistsException, UsernameExistsException, IOException;
+    User addNewUser(String firstName, String lastName, String username, String email, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws EmailExistsException, UsernameExistsException, IOException, NotAnImageFileException;
 
     //updating information
-    User updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws EmailExistsException, UsernameExistsException, IOException;
+    User updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws EmailExistsException, UsernameExistsException, IOException, NotAnImageFileException;
 
-    void deleteUser(long id);
+    void deleteUser(String username) throws IOException;
 
     void resetPassword(String email) throws MessagingException, EmailNotFoundException;
 
     //only updating the profile picture and that's it
-    User updateProfileImage(String username, MultipartFile profileImage) throws EmailExistsException, UsernameExistsException, IOException;
+    User updateProfileImage(String username, MultipartFile profileImage) throws EmailExistsException, UsernameExistsException, IOException, NotAnImageFileException;
 
 
 }
