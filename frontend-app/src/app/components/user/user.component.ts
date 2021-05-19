@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -11,17 +11,19 @@ import { User } from 'src/app/model/user';
 import { AuthenticationService } from 'src/app/service/authentication.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
 
     // behavior subject is a special type of observable so you can subscribe to messages like any other observable. 
     //The unique features of BehaviorSubject are at any point, you can retrieve the last value of the subject in a non-observable code using the getValue() method.
 
+  private subs = new SubSink();
   private titleSubject = new BehaviorSubject<string>('Users');  //by default whenever this page loads, the title is going to be users
   public titleAction$ = this.titleSubject.asObservable(); //this is the listener for the titleSubject so whenever it changes we can update it's value
   public users: User[]; //will hold all of the users we have
@@ -51,7 +53,7 @@ export class UserComponent implements OnInit {
 
   public getUsers(showNotification: boolean): void {  //before we load all of the users
     this.refreshing = true; //determines that the application is fetching data
-    this.subscriptions.push(
+    this.subs.add(
       this.userService.getUsers().subscribe(
         (response: User[]) => { //after we load all of the users
           this.userService.addUsersToLocalCache(response);
@@ -65,8 +67,7 @@ export class UserComponent implements OnInit {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message); //accessing the actual error & the actual message FROM HttpErrorResponse
           this.refreshing = false;
         }
-      )
-    );
+      ));
   }
 
   public onSelectUser(selectedUser: User): void {
@@ -89,8 +90,9 @@ export class UserComponent implements OnInit {
       //we set null because they don't have a logged in username, getting all of the form data of the user, and getting the profile image,
       //since it's a call to the backend we have to subscribe to it because it's an observable
     const formData = this.userService.createUserFormData(null, userForm.value, this.profileImage);
-    this.subscriptions.push(
-      this.userService.addUser(formData).subscribe(
+  
+      this.subs.add(
+        this.userService.addUser(formData).subscribe(
         (response: User) => {
           //it will click the button and close the actual modal once the user is successful
           this.clickButton('new-user-close');
@@ -105,14 +107,13 @@ export class UserComponent implements OnInit {
           this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.profileImage = null; //don't want to keep the filename there if something goes wrong or exit out of the form
         }
-      )
-    );
+    ));
   }
 
   public onUpdateUser(): void {
     const formData = this.userService.createUserFormData(this.currentUsername, this.editUser, this.profileImage);
-    this.subscriptions.push(
-      this.userService.updateUser(formData).subscribe(
+      this.subs.add(
+        this.userService.updateUser(formData).subscribe(
         (response: User) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false);
@@ -148,8 +149,8 @@ export class UserComponent implements OnInit {
     this.refreshing = true;
     this.currentUsername = this.authenticationService.getUserFromLocalCache().username;
     const formData = this.userService.createUserFormData(this.currentUsername, user, this.profileImage);
-    this.subscriptions.push(
-      this.userService.updateUser(formData).subscribe(
+      this.subs.add(
+        this.userService.updateUser(formData).subscribe(
         (response: User) => {
           this.authenticationService.addUserToLocalCache(response);
           this.getUsers(false);
@@ -176,7 +177,7 @@ export class UserComponent implements OnInit {
     const formData = new FormData();
     formData.append('username', this.user.username);  //formData takes a key and the value, this will take in the current username
     formData.append('profileImage', this.profileImage); //this will take in the profile image that they are updating. For the key, we have to match it up with what we set up in the backend so the data can reflect accordingly.
-    this.subscriptions.push(
+    this.subs.add(
       this.userService.updateProfileImage(formData).subscribe(
         (event: HttpEvent<any>) => {
           this.reportUploadProgress(event);
@@ -197,7 +198,7 @@ export class UserComponent implements OnInit {
   public onResetPassword(emailForm: NgForm): void { //since we are reseting the password we want to be able to reset the actual form
     this.refreshing = true;
     const emailAddress = emailForm.value['reset-password-email']; //passing in the name of the input so we can grab the value for that specific property on the object
-    this.subscriptions.push(
+    this.subs.add(
       this.userService.resetPassword(emailAddress).subscribe(
         (response: CustomHttpResponse) => { //the process could execute successfully
           this.sendNotification(NotificationType.SUCCESS, response.message);
@@ -215,7 +216,7 @@ export class UserComponent implements OnInit {
   }
 
 public onDeleteUser(username: string): void {
-  this.subscriptions.push(
+  this.subs.add(
     this.userService.deleteUser(username).subscribe(
       (response: CustomHttpResponse) => {
         this.sendNotification(NotificationType.SUCCESS, response.message);  //grabs our response from the backend
@@ -286,5 +287,9 @@ public onDeleteUser(username: string): void {
   //takes in the button id and calls the click function to actually execute the method
   private clickButton(buttonId: string): void {
     document.getElementById(buttonId).click();
+  }
+
+  ngOnDestroy(): void { //unsubscribing from all of the calls that we are making to the backend
+    this.subs.unsubscribe();
   }
 }

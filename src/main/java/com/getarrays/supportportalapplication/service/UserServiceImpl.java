@@ -33,7 +33,6 @@ import java.util.List;
 
 import static com.getarrays.supportportalapplication.constant.FileConstant.*;
 import static com.getarrays.supportportalapplication.constant.UserImplementationConstant.*;
-import static com.getarrays.supportportalapplication.enumeration.Role.ROLE_SUPER_ADMIN;
 import static com.getarrays.supportportalapplication.enumeration.Role.ROLE_USER;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -52,11 +51,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private EmailService emailService;
 
+    private LoginAttemptService loginAttemptService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailService emailService, LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.loginAttemptService = loginAttemptService;
     }
 
 
@@ -67,6 +69,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             LOGGER.error(NO_USER_FOUND_BY_USERNAME + username);
             throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
         } else {
+            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
             userRepository.save(user);
@@ -209,6 +212,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    private void validateLoginAttempt(User user) {
+        if(user.isNotLocked()) {
+            if(loginAttemptService.hasExceededMaxAttempt(user.getUsername())) {
+                user.setNotLocked(false);   //which means that the account is now locked
+            } else {
+                user.setNotLocked(true);    //that they are not locked
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptToCache(user.getUsername());   //gets rid of the attempts inside of the cache from the user's username
+        }
+    }
 
     private String setProfileImageUrl(String username) {
         return ServletUriComponentsBuilder.fromCurrentContextPath().path(USER_IMAGE_PATH + username + FORWARD_SLASH + username + DOT + JPG_EXTENSION).toUriString();    //will return the actual string which is the location of the image

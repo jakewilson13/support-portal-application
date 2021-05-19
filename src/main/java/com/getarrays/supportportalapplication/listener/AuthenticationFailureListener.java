@@ -19,11 +19,11 @@ public class AuthenticationFailureListener {
         this.loginAttemptService = loginAttemptService;
     }
 
-    @EventListener  //listening on the event. Whenever it occurs we grab the principal(the username) and then we add the user into the actual cache if they fail to login
-    public void authenticationFailure(AuthenticationFailureBadCredentialsEvent event) {
+    @EventListener
+    public void onAuthenticationFailure(AuthenticationFailureBadCredentialsEvent event) {
         Object principal = event.getAuthentication().getPrincipal();
         if(principal instanceof String) {
-            String username = (String) event.getAuthentication().getPrincipal();    //safe check because we don't want the application to trip if it's not an actual String
+            String username = (String) event.getAuthentication().getPrincipal();
             loginAttemptService.addUserToLoginAttemptCache(username);
         }
     }

@@ -22,7 +22,6 @@ public class LoginAttemptService {
         loginAttemptCache = CacheBuilder.newBuilder().expireAfterWrite(15, MINUTES) //time that the cache expires after
                 .maximumSize(100)   //at any given time we will have 100 entries inside of the actual cache
                 .build(new CacheLoader<String, Integer>() {
-                    @Override
                     public Integer load(String key) throws Exception {
                         return 0;
                     }
@@ -36,7 +35,7 @@ public class LoginAttemptService {
     public void addUserToLoginAttemptCache(String username) {
         int attempts = 0;
         try {
-            attempts = ATTEMPT_INCREMENT + loginAttemptCache.get(username); //adding the user to the cache, before we do that we add 1 to the number of attempts within the 15 minutes
+            attempts = ATTEMPT_INCREMENT + loginAttemptCache.get(username);
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
@@ -45,7 +44,7 @@ public class LoginAttemptService {
 
     public boolean hasExceededMaxAttempt(String username) {
         try {
-            return loginAttemptCache.get(username) >= MAXIMUM_NUMBER_OF_ATTEMPTS; //when we call get, it will return the number of attempts
+            return loginAttemptCache.get(username) >= MAXIMUM_NUMBER_OF_ATTEMPTS; //when we call get, it will return the number of attempts, it will stop you on the 6th time you try to login without correct credentials
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
