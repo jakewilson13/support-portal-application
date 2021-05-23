@@ -3,7 +3,7 @@ Fullstack springboot/angular web application designed to log a companies employe
 
 APP NOW DEPLOYED AT: http://18.191.213.57
 Use credentials:
-Username - guest
+Username - guest. 
 Password - 5sv5iyFRcm
 
 Feel free to interact with the application to see different functionality that was provided and to get a feel for the app. Currently in the proccess of creating a google workspace account so I can give the IP a correct domain name & to have the reset email functionality fully functional given google has a lot of security restraints.
